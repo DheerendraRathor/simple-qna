@@ -1,0 +1,61 @@
+{% extends 'forum/users/base.html' %}
+{% load sekizai_tags %}
+
+{% block users_content %}
+
+    {% addtoblock 'css' %}
+        {{ form.media.css }}
+    {% endaddtoblock %}
+
+    {% addtoblock 'js' %}
+        {{ form.media.js }}
+    {% endaddtoblock %}
+
+    <form role="form" method="GET">
+        {% csrf_token %}
+        {{ form }}
+    </form>
+    {% if followed_users_list %}
+        <ul>
+        {% for user in followed_users_list %}
+            <li>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 class='col-md-6' style="padding-left: 0;">{{ user.username }}</h4>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary toggle-follow"
+                                        data-url="/{{ request.LANGUAGE_CODE }}/toggle-follow/user/{{ user.id }}/">
+                                    Unfollow
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <span>{{ user.get_full_name }}</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>You're not following any user</p>
+    {% endif %}
+
+    {% addtoblock 'js' %}
+        <script type="application/javascript">
+            $('body').on('click', '.toggle-follow', function (e){
+                e.preventDefault();
+                var $this = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: $this.data('url'),
+                    data: 'csrfmiddlewaretoken={{ csrf_token }}',
+                    success: function () {
+                        window.location.reload();
+                    }
+                })
+            });
+        </script>
+    {% endaddtoblock %}
+{% endblock %}
