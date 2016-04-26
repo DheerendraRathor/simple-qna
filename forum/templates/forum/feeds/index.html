@@ -6,6 +6,17 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
+                <ul>
+                    {% for question in feeds_list %}
+                        <li>
+                            <a href="/{{ request.LANGUAGE_CODE }}/feed/question/{{ question.id }}/">
+                                <h3>{{ question.question }}</h3>
+                            </a>
+                            <p>{{ question.description }}</p>
+                            {{ question.asker.get_full_name }}
+                        </li>
+                    {% endfor %}
+                </ul>
 
             </div>
             <div class="col-md-4">

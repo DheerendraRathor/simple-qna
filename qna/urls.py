@@ -22,6 +22,7 @@ urlpatterns = i18n_patterns(
     url(r'^accounts/', include('registration.backends.simple.urls')),
     url(r'^', include('followit.urls')),
     url(r'^', include('djangocms_forms.urls')),
+    url(r'^', include('forum.feed_urls', namespace='feed')),
     url(r'^', include('cms.urls')),
 
 )

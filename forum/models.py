@@ -10,16 +10,24 @@ class Topic(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField()
 
+    def __unicode__(self):
+        return self.name
+
 
 class Question(models.Model):
     question = models.CharField(max_length=512)
     description = models.TextField()
+    topics = models.ManyToManyField(Topic, blank=True, related_name='questions')
     asker = models.ForeignKey(User, related_name='questions')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return self.question
 
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, related_name='answers')
+    answer = models.TextField(null=True)
     responder = models.ForeignKey(User, related_name='answers')
     created_at = models.DateTimeField(auto_now_add=True)
     upvotes = models.ManyToManyField(User, blank=True, related_name='upvoted_answers')

@@ -152,7 +152,6 @@ INSTALLED_APPS = (
     'djangocms_link',
     'reversion',
     'qna',
-    'polls',
     'forum',
     'followit',
     'ajax_select',

@@ -1,0 +1,31 @@
+{% extends 'forum/feeds/base.html' %}
+{% load cms_tags %}
+
+{% block feeds_content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h3>{{ question.question }}</h3>
+                <p>{{ question.description }}</p>
+
+                <div class="container">
+                    <h3>Answers:</h3>
+                    <ul>
+                        {% for answer in answers_list %}
+                            <li>
+                                <h4>{{ answer.responder.get_full_name }} - {{ answer.created_at }}</h4>
+                                <p>{{ answer.answer }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+            <div class="col-md-4">
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
