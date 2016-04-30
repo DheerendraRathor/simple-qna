@@ -1,31 +1,108 @@
 {% extends 'forum/feeds/base.html' %}
-{% load cms_tags %}
+{% load cms_tags sekizai_tags %}
 
 {% block feeds_content %}
 
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h3>{{ question.question }}</h3>
+                <h3>{{ question.question }}
+                    {% for topic in question.topics.all %}
+                        <span style="font-size: 10px;" class="label label-default">
+
+                                {{ topic.name }}
+                        </span>
+                    {% endfor %}
+                </h3>
+
+                <div class="question-meta" style="margin-bottom: 15px;">
+                    <span class="glyphicon glyphicon-user"> </span>
+                    {{ question.asker.get_full_name }}
+                    -
+                    <small>{{ question.created_at }}</small>
+                </div>
+
                 <p>{{ question.description }}</p>
 
-                <div class="container">
-                    <h3>Answers:</h3>
-                    <ul>
+                <hr style="height: 5px; border: none; background-color: #eee;"/>
+
+                {% if answers_list %}
+                    <ul style="list-style: none; padding-left: 0;">
                         {% for answer in answers_list %}
-                            <li>
-                                <h4>{{ answer.responder.get_full_name }} - {{ answer.created_at }}</h4>
+                            <li id="answer{{ answer.id }}">
+                                <div class="answer-meta" style="margin-bottom: 15px;">
+                                    <span class="glyphicon glyphicon-user"> </span>
+                                    {{ answer.responder.get_full_name }}
+                                    -
+                                    <small>{{ answer.created_at }}</small>
+                                </div>
                                 <p>{{ answer.answer }}</p>
+                                <button class="btn btn-primary btn-sm vote-btn upvote"
+                                        data-answer_id="{{ answer.id }}"
+                                        data-type="upvote">
+                                    Upvote
+                                    <span class="badge">{{ answer.upvotes_count }}</span>
+                                </button>
+                                <button class="btn btn-warning btn-sm vote-btn downvote"
+                                        style="margin-left: 10px;"
+                                        data-answer_id="{{ answer.id }}"
+                                        data-type="downvote">
+                                    Downvote
+                                    <span class="badge">{{ answer.downvotes_count }}</span>
+                                </button>
                             </li>
+                            <hr/>
                         {% endfor %}
                     </ul>
-                </div>
+                {% else %}
+                    <h4>No answers yet. Add your own answer</h4>
+                {% endif %}
+
 
             </div>
             <div class="col-md-4">
-
+                <h3>
+                    <a href="/{{ request.LANGUAGE_CODE }}/feed/question/{{ question.id }}/new/">
+                        Add New Answer
+                    </a>
+                </h3>
             </div>
         </div>
     </div>
+
+    {% addtoblock 'js' %}
+        <script type="application/javascript">
+
+            $(".vote-btn").click(function (e) {
+                e.preventDefault();
+
+                var answer_id = $(this).data('answer_id');
+                var type = $(this).data('type');
+                var url = '/{{ request.LANGUAGE_CODE }}/feed/answer/' + answer_id + '/' + type + '/';
+
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: 'csrfmiddlewaretoken={{ csrf_token }}',
+                    dataType: 'json',
+                    success: function (data) {
+                        var upvotes = data.upvotes;
+                        var downvotes = data.downvotes;
+
+                        var answer_node = $("#answer" + answer_id);
+
+                        var upvote_badge = answer_node.children('.upvote').children('.badge');
+                        var downvote_badge = answer_node.children('.downvote').children('.badge');
+
+                        upvote_badge.html(upvotes);
+                        downvote_badge.html(downvotes);
+
+                    }
+                })
+
+            })
+        </script>
+    {% endaddtoblock %}
 
 {% endblock %}

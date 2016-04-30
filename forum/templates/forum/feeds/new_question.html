@@ -1,0 +1,21 @@
+{% extends 'forum/feeds/base.html' %}
+{% load bootstrap sekizai_tags %}
+
+{% block feeds_content %}
+
+    {% addtoblock 'css' %}
+        {{ form.media.css }}
+    {% endaddtoblock %}
+
+    {% addtoblock 'js' %}
+        {{ form.media.js }}
+    {% endaddtoblock %}
+
+    <form role="form" method="post">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+
+        <input type="submit" class="btn btn-primary"/>
+    </form>
+
+{% endblock %}

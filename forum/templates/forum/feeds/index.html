@@ -6,21 +6,39 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <ul>
+                <ul style="list-style: none;">
                     {% for question in feeds_list %}
                         <li>
-                            <a href="/{{ request.LANGUAGE_CODE }}/feed/question/{{ question.id }}/">
-                                <h3>{{ question.question }}</h3>
-                            </a>
+                            <h3>
+                                <a href="/{{ request.LANGUAGE_CODE }}/feed/question/{{ question.id }}/">
+                                    {{ question.question }}
+                                </a>
+                                {% for topic in question.topics.all %}
+                                    <span style="font-size: 10px;" class="label label-default">
+
+                                            {{ topic.name }}
+                                    </span>
+                                {% endfor %}
+                            </h3>
+
+                            <div class="question-meta" style="margin-bottom: 15px;">
+                                <span class="glyphicon glyphicon-user"> </span>
+                                {{ question.asker.get_full_name }}
+                                - <small>{{ question.created_at }}</small>
+                            </div>
+
                             <p>{{ question.description }}</p>
-                            {{ question.asker.get_full_name }}
+
                         </li>
+                        <hr/>
                     {% endfor %}
                 </ul>
 
             </div>
             <div class="col-md-4">
-
+                {% if request.user.is_authenticated %}
+                    {% placeholder content %}
+                {% endif %}
             </div>
         </div>
     </div>

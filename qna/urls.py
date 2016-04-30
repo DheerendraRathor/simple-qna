@@ -10,6 +10,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from ajax_select import urls as ajax_select_urls
 
+from accounts.forms import SignupFormExtra
+
 admin.autodiscover()
 
 urlpatterns = i18n_patterns(
@@ -19,10 +21,9 @@ urlpatterns = i18n_patterns(
         {'sitemaps': {'cmspages': CMSSitemap}}),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^ajax_select/', include(ajax_select_urls)),
-    url(r'^accounts/', include('registration.backends.simple.urls')),
+    url(r'^accounts/signup/$', 'userena.views.signup', {'signup_form': SignupFormExtra}),
+    url(r'^accounts/', include('userena.urls')),
     url(r'^', include('followit.urls')),
-    url(r'^', include('djangocms_forms.urls')),
-    url(r'^', include('forum.feed_urls', namespace='feed')),
     url(r'^', include('cms.urls')),
 
 )
