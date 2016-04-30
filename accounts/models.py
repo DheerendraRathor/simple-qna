@@ -9,4 +9,11 @@ class UserProfile(UserenaBaseProfile):
                                 unique=True,
                                 verbose_name=_('user'),
                                 related_name='profile')
-    credits = models.TextField(default=500, editable=False)
+    credits = models.IntegerField(default=500, editable=False)
+
+    def change_credits(self, creds):
+        self.credits += creds
+        if self.credits < 0:
+            self.user.is_active = False
+            self.user.save()
+        self.save()

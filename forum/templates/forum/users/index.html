@@ -1,5 +1,5 @@
 {% extends 'forum/users/base.html' %}
-{% load sekizai_tags %}
+{% load sekizai_tags bootstrap %}
 
 {% block users_content %}
 
@@ -13,7 +13,7 @@
 
     <form role="form" method="GET">
         {% csrf_token %}
-        {{ form }}
+        {{ form|bootstrap }}
     </form>
     {% if followed_users_list %}
         <ul>

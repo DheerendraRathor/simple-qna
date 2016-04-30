@@ -121,6 +121,7 @@ class NewAnswerView(FormView):
         user = self.request.user
         question_id = self.kwargs.get('question_id')
         question = get_object_or_404(Question, pk=question_id)
+        question.asker.profile.change_credits(10)
         answer = form.save(commit=False)
         answer.question = question
         answer.responder = user

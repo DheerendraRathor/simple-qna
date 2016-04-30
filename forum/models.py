@@ -37,12 +37,18 @@ class Answer(models.Model):
         self.downvotes.remove(user)
         if self.upvotes.filter(id=user.id).exists():
             self.upvotes.remove(user)
+            self.responder.profile.change_credits(-10)
         else:
             self.upvotes.add(user)
+            self.responder.profile.change_credits(10)
 
     def downvote(self, user):
         self.upvotes.remove(user)
         if self.downvotes.filter(id=user.id).exists():
             self.downvotes.remove(user)
+            self.responder.profile.change_credits(5)
+            user.profile.change_credits(2)
         else:
             self.downvotes.add(user)
+            self.responder.profile.change_credits(-5)
+            user.profile.change_credits(-2)
