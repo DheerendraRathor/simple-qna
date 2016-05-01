@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
+from followit import utils
 
 from forum.forms import TopicForm, UserForm, NewQuestionForm, NewAnswerForm
 from forum.models import Question, Answer, Topic
@@ -151,3 +152,36 @@ class AnswerVoteView(View):
             }),
             content_type='application/json',
         )
+
+
+@utils.followit_ajax_view
+@utils.post_only
+def toggle_follow_user(request, model_name='user', object_id=None):
+    """if object is followed then unfollows
+    otherwise follows
+
+    returns json
+    {
+        'status': 'success', # or 'error'
+        'following': True, #or False
+    }
+
+
+    unfollows an object and returns status 'success' or
+    'error' - via the decorator :func:`~followit.utils.followit_ajax_view`
+    """
+    obj = utils.get_object(model_name, object_id)
+    if request.user.is_following(obj):
+        toggle_func = getattr(request.user, 'unfollow_user')
+        following = False
+        obj.profile.change_credits(-10)
+    else:
+        toggle_func = getattr(request.user, 'follow_user')
+        following = True
+        obj.profile.change_credits(10)
+
+    toggle_func(obj)
+    return {
+        'status': 'success',
+        'following': following
+    }

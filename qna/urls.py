@@ -11,6 +11,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from ajax_select import urls as ajax_select_urls
 
 from accounts.forms import SignupFormExtra
+from forum.views import toggle_follow_user
 
 admin.autodiscover()
 
@@ -23,6 +24,7 @@ urlpatterns = i18n_patterns(
     url(r'^ajax_select/', include(ajax_select_urls)),
     url(r'^accounts/signup/$', 'userena.views.signup', {'signup_form': SignupFormExtra}),
     url(r'^accounts/', include('userena.urls')),
+    url(r'^toggle-follow/(?P<model_name>user)/(?P<object_id>\d+)/$', toggle_follow_user),
     url(r'^', include('followit.urls')),
     url(r'^', include('cms.urls')),
 
