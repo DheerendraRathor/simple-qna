@@ -1,5 +1,8 @@
 # Simple QnA
 
+CMS used:
+- Django CMS (http://www.django-cms.org/en/)
+
 # To install it
 - Install python 2.7
 - Run `pip install -r requirements.txt`
